@@ -5,6 +5,7 @@ import argparse, dotenv, os, datetime, traceback, sys, json, requests, csv
 # Parsing command line arguments
 argParser = argparse.ArgumentParser(description='Generates a CSV file with yesterday\'s message statistics for campaigns in your account')
 argParser.add_argument('target', help='Write the result into csv file specified through this argument. Example: output.csv')
+argParser.add_argument('-r', '--reduced', help='Use a more compact output format with only one row per campaign message and separate columns for each KPI', action='store_true')
 args = argParser.parse_args()
 TARGET_FILE = args.target
 print('Target File:', TARGET_FILE)
@@ -132,22 +133,39 @@ for campaign in campaigns:
                 for messageStatistic in campaignStatistics['history'][day]:
                     messageId = messageStatistic['id']
                     messageDetails = campaignStatistics['description'][messageId]
-                    for kpiId in messageStatistic['values']:
-                        value = messageStatistic['values'][kpiId]
-                        if len([kpi for kpi in kpiDefinitions if str(kpi['id']) == kpiId]) == 1: # Check if the ID belongs to a defined KPI
-                            currentKpi = [kpi for kpi in kpiDefinitions if str(kpi['id']) == kpiId][0]
-                            if currentKpi['name'] in KPIS_TO_EXPORT: # Check if the KPI is one of the KPIs we want to export
-                                result = {
-                                    'Date': date,
-                                    'Campaign ID': campaign['id'],
-                                    'Campaign Name': campaign['name'],
-                                    'Message ID': messageId,
-                                    'Message Name': messageDetails['name'],
-                                    'Message Channel': messageDetails['channelType'],
-                                    'KPI': currentKpi['name'],
-                                    'Value': value
-                                }
-                                results.append(result)
+                    if args.reduced:
+                        result = {
+                            'Date': date,
+                            'Campaign ID': campaign['id'],
+                            'Campaign Name': campaign['name'],
+                            'Message ID': messageId,
+                            'Message Name': messageDetails['name'],
+                            'Message Channel': messageDetails['channelType']
+                        }
+                        for kpiId in messageStatistic['values']:
+                            value = messageStatistic['values'][kpiId]
+                            if len([kpi for kpi in kpiDefinitions if str(kpi['id']) == kpiId]) == 1: # Check if the ID belongs to a defined KPI
+                                currentKpi = [kpi for kpi in kpiDefinitions if str(kpi['id']) == kpiId][0]
+                                if currentKpi['name'] in KPIS_TO_EXPORT: # Check if the KPI is one of the KPIs we want to export
+                                    result[currentKpi['name']] = value
+                        results.append(result)
+                    else:
+                        for kpiId in messageStatistic['values']:
+                            value = messageStatistic['values'][kpiId]
+                            if len([kpi for kpi in kpiDefinitions if str(kpi['id']) == kpiId]) == 1: # Check if the ID belongs to a defined KPI
+                                currentKpi = [kpi for kpi in kpiDefinitions if str(kpi['id']) == kpiId][0]
+                                if currentKpi['name'] in KPIS_TO_EXPORT: # Check if the KPI is one of the KPIs we want to export
+                                    result = {
+                                        'Date': date,
+                                        'Campaign ID': campaign['id'],
+                                        'Campaign Name': campaign['name'],
+                                        'Message ID': messageId,
+                                        'Message Name': messageDetails['name'],
+                                        'Message Channel': messageDetails['channelType'],
+                                        'KPI': currentKpi['name'],
+                                        'Value': value
+                                    }
+                                    results.append(result)
         else:
             raise ValueError('Unexpected response code ' + str(campaignStatisticsResponse.status_code) + ' when fetching campaign statistics')
     except Exception:
@@ -155,9 +173,14 @@ for campaign in campaigns:
         traceback.print_exc()
         sys.exit(1)
 
+# Now write everything into a csv file
 print('Writing statistics to file')
 with open(TARGET_FILE, 'w+', newline='', encoding='utf-8') as csvfile:
-    fields = ['Date', 'Campaign ID', 'Campaign Name', 'Message ID', 'Message Name', 'Message Channel', 'KPI', 'Value']
+    fields = ['Date', 'Campaign ID', 'Campaign Name', 'Message ID', 'Message Name', 'Message Channel']
+    if args.reduced:
+        fields.extend(KPIS_TO_EXPORT)
+    else:
+        fields.extend(['KPI', 'Value'])
     writer = csv.DictWriter(csvfile, fieldnames=fields)
     writer.writeheader()
     for result in results:
