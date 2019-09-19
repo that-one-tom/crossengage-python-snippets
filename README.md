@@ -2,7 +2,7 @@
 Re-usable Python scripts doing useful things with the various APIs of the CrossEngage CDP. The code provided is neither provided nor endorsed or supported by CrossEngage.
 
 ## Prerequisites
-These scripts consumes APIs of the [CrossEngage](https://www.crossengage.io/) CDP. You need to have an active account with this service and be in possesion of a valid master API key for this account.
+These scripts consume APIs of the [CrossEngage](https://www.crossengage.io/) CDP. You need to have an active account with this service and be in possesion of a valid master API key for this account.
 
 The code was written and tested using Python 3.7.4. It utilises the excellent [Requests HTTP library](https://2.python-requests.org/en/master/) as well as [python-dotenv](https://github.com/theskumar/python-dotenv) to make managing environment variables easy.
 
@@ -24,4 +24,4 @@ XNG_APP_PASSWORD="topsecretpassword"
 ### fetchMessageStatistcs.py
 This script generates a CSV file with yesterday's message statistics for campaigns in your account.
 
-Usage Example: `python3 fetchMessageStatistcs.py output.csv` where output.csv is the target file.
+Usage Example: `python3 fetchMessageStatistcs.py output.csv` where output.csv is the target file. Use the `-r` or `--reduced` option to have each KPI in a separate column and thus only one row per message (instead of one row per KPI per message).
