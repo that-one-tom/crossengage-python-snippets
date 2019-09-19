@@ -24,4 +24,4 @@ XNG_APP_PASSWORD="topsecretpassword"
 ### fetchMessageStatistcs.py
 This script generates a CSV file with yesterday's message statistics for campaigns in your account.
 
-Usage Example: `python3 fetchMessageStatistcs.py output.csv` where output.csv is the target file. Use the `-r` or `--reduced` option to have each KPI in a separate column and thus only one row per message (instead of one row per KPI per message).
+Usage Example: `python3 fetchMessageStatistcs.py output.csv` where output.csv is the target file. Use the `-r` or `--reduced` option (e.g. `python3 fetchMessageStatistcs.py -r ~/test.csv)` to have each KPI in a separate column and thus only one row per message (instead of one row per KPI per message).
