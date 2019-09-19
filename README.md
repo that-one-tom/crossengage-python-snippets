@@ -8,7 +8,7 @@ The code was written and tested using Python 3.7.4. It utilises the excellent [R
 
 ## Installation
 1. Clone the repository from GitHub using `git clone https://github.com/MutedJam/crossengage-python-snippets.git` and enter the newly created directory using `cd crossengage-python-snippets`
-2. Install the requirements with `pip install -r requirements.txt`
+2. Install the requirements with `pip3 install -r requirements.txt`
 3. Set the environment variables XNG_MASTER_API_KEY, XNG_APP_USER, XNG_APP_PASSWORD manually or configure them permantently in the `.env` file (see next section for an example)
 
 ## .env file
