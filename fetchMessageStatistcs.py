@@ -87,7 +87,6 @@ UI_HEADERS = {
     'Company-ID': str(companyId),
     'X-XNG-ApiVersion': str(2),
     'Authorization': 'Bearer ' + uiToken
-
 }
 
 # Fetch KPI definitions
