@@ -8,7 +8,7 @@ The code was written and tested using Python 3.7.4. It utilises the excellent [R
 
 ## Installation
 1. Clone the repository from GitHub using `git clone https://github.com/MutedJam/crossengage-python-snippets.git` and enter the newly created directory using `cd crossengage-python-snippets`
-2. Install the requirements with `pip install -r requirements.txt`
+2. Install the requirements with `pip3 install -r requirements.txt`
 3. Set the environment variables XNG_MASTER_API_KEY, XNG_APP_USER, XNG_APP_PASSWORD manually or configure them permantently in the `.env` file (see next section for an example)
 
 ## .env file
@@ -31,7 +31,7 @@ Generates a CSV file with yesterday's message statistics for campaigns in your a
 
 Requires environment variables `XNG_MASTER_API_KEY`, `XNG_APP_USER` and `XNG_APP_PASSWORD`.
 
-Usage Example: `python3 fetchMessageStatistcs.py output.csv` where output.csv is the target file. Use the `-r` or `--reduced` option to have each KPI in a separate column and thus only one row per message (instead of one row per KPI per message).
+Usage Example: `python3 fetchMessageStatistcs.py output.csv` where output.csv is the target file. Use the `-r` or `--reduced` option (e.g. `python3 fetchMessageStatistcs.py -r ~/test.csv)` to have each KPI in a separate column and thus only one row per message (instead of one row per KPI per message).
 
 ### optOutSendgridGlobalSuppressions.py
 Fetches the _Global Unsubscribes_ from Sendgrid through the [respective API](https://sendgrid.com/docs/API_Reference/Web_API_v3/Suppression_Management/global_suppressions.html), then creates a segment in your CrossEngage account to identify CrossEngage users with matching email addresses and marks them as opted out of all CrossEngage communication. This avoids having CrossEngage send messages for these users to Sendgrid only for Sendgrid to drop them (which would not be reflected in the CrossEngage statistics).
@@ -39,3 +39,5 @@ Fetches the _Global Unsubscribes_ from Sendgrid through the [respective API](htt
 The script only takes Sendgrid's _Global Unsubscribes_ but not _Unsubscribe Groups_ into account as there is no group-based opt-out management available in CrossEngage.
 
 Requires environment variables `XNG_MASTER_API_KEY`, `XNG_APP_USER`, `XNG_APP_PASSWORD`, `XNG_WEB_TRACKING_KEY` and `SENDGRID_API_KEY`. The Sendgrid API key needs at least read access to Suppressions.
+
+Usage Example: `python3 optOutSendgridGlobalSuppressions.py`
